@@ -18,4 +18,5 @@ def generate():
             messagebox.showerror("Ошибка","Введите числа")
         interface.l_b.insert("end",generator.generate_password(state_lowercase,state_numbers,state_uppercase,state_simbols))
 interface.button.config(command=generate)
+#@!1
 interface.window.mainloop()
