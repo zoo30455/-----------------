@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -55,7 +56,7 @@ func run(args []string) error {
 	var gameArg string
 	for _, a := range args {
 		switch strings.ToLower(a) {
-		case "install", "restore", "uninstall", "list", "probe", "probe2", "probe3", "probe4":
+		case "install", "restore", "uninstall", "list", "probe", "probe-reset":
 			mode = strings.ToLower(a)
 		default:
 			gameArg = a
@@ -86,12 +87,12 @@ func run(args []string) error {
 		return restore(bgm, backup)
 	case "list":
 		return writeList(bgm, backup, filepath.Join(exeDir(), listName))
-	case "probe", "probe2", "probe3", "probe4":
-		round := 1
-		if mode != "probe" {
-			round = int(mode[5] - '0')
-		}
-		return probe(bgm, backup, round)
+	case "probe-reset":
+		os.Remove(filepath.Join(exeDir(), probeStateName))
+		fmt.Println("Поиск начнётся заново.")
+		return nil
+	case "probe":
+		return probe(bgm, backup, readProbeRound())
 	}
 
 	source, targets, err := loadConfig()
@@ -369,11 +370,29 @@ var probeTargets = []struct{ file, title string }{
 	{"bgm137", "Расследование ~ основная (Investigation Core)"},
 }
 
-// probe раскладывает 10 кандидатов из первой игры по известным трекам третьей,
-// чтобы найти "Objection! 2001" за один заход в музыкальный плеер.
-func probe(bgm, backup string, round int) error {
-	var cands []string
-	for i := 0; i < 60; i++ {
+const probeStateName = "probe_round.txt"
+
+func readProbeRound() int {
+	b, err := os.ReadFile(filepath.Join(exeDir(), probeStateName))
+	if err != nil {
+		return 1
+	}
+	var r int
+	if _, err := fmt.Sscan(string(b), &r); err != nil || r < 1 {
+		return 1
+	}
+	return r
+}
+
+// probeCandidates — все треки до третьей игры (bgm000–bgm116) длиной 40–150 сек,
+// отсортированные по близости к 75 сек (примерная длина Objection! 2001).
+func probeCandidates(bgm, backup string) []string {
+	type cand struct {
+		name string
+		diff float64
+	}
+	var cs []cand
+	for i := 0; i < 117; i++ {
 		name := fmt.Sprintf("bgm%03d", i)
 		raw, err := original(bgm, backup, name)
 		if err != nil {
@@ -383,21 +402,40 @@ func probe(bgm, backup string, round int) error {
 		if err != nil {
 			continue
 		}
-		if l := clips[0].Length(); name != "bgm012" && l >= 55 && l <= 100 {
-			cands = append(cands, name)
+		l := float64(clips[0].Length())
+		if name == "bgm012" || l < 40 || l > 150 {
+			continue
 		}
+		cs = append(cs, cand{name, math.Abs(l - 75)})
+	}
+	sort.SliceStable(cs, func(i, j int) bool { return cs[i].diff < cs[j].diff })
+	out := make([]string, len(cs))
+	for i, c := range cs {
+		out[i] = c.name
+	}
+	return out
+}
+
+// probe раскладывает 10 кандидатов по известным трекам третьей игры, чтобы
+// найти "Objection! 2001" за один заход в музыкальный плеер. Каждый запуск
+// берёт следующие 10 кандидатов.
+func probe(bgm, backup string, round int) error {
+	all := probeCandidates(bgm, backup)
+	rounds := (len(all) + len(probeTargets) - 1) / len(probeTargets)
+	if rounds == 0 {
+		return errors.New("не нашлось ни одного кандидата")
+	}
+	if round > rounds {
+		round = 1
 	}
 	start := (round - 1) * len(probeTargets)
-	if start >= len(cands) {
-		return fmt.Errorf("кандидаты закончились (всего их %d)", len(cands))
-	}
-	cands = cands[start:]
+	cands := all[start:]
 	if len(cands) > len(probeTargets) {
 		cands = cands[:len(probeTargets)]
 	}
 
 	var sb strings.Builder
-	fmt.Fprintf(&sb, "ПОИСК OBJECTION! 2001 — заход %d\n", round)
+	fmt.Fprintf(&sb, "ПОИСК OBJECTION! 2001 — заход %d из %d\n", round, rounds)
 	sb.WriteString("Откройте музыкальный плеер, третья игра, и послушайте эти треки.\n")
 	sb.WriteString("Где заиграет Objection! 2001 — номер справа и есть нужный.\n\n")
 	for i, c := range cands {
@@ -408,9 +446,10 @@ func probe(bgm, backup string, round int) error {
 		}
 		fmt.Fprintf(&sb, "  %-48s ->  %s\n", t.title, c)
 	}
-	sb.WriteString("\nНе нашли? Запустите следующий заход (\"Поиск Objection 2.bat\").\n")
-	sb.WriteString("После поиска запустите \"Удалить мод.bat\", впишите номер в objection_mod.txt\n(source = bgmXXX) и запустите ObjectionMod.exe.\n")
+	sb.WriteString("\nНе нашли? Запустите \"Поиск Objection.bat\" ещё раз — будут следующие 10.\n")
+	sb.WriteString("Нашли: \"Удалить мод.bat\" -> впишите source = bgmXXX в objection_mod.txt\n-> запустите ObjectionMod.exe.\n")
 	fmt.Println()
 	fmt.Print(sb.String())
+	os.WriteFile(filepath.Join(exeDir(), probeStateName), []byte(fmt.Sprint(round+1)), 0o644)
 	return os.WriteFile(filepath.Join(exeDir(), "probe.txt"), []byte("\ufeff"+sb.String()), 0o644)
 }

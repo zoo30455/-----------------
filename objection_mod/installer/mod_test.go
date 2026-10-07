@@ -169,7 +169,7 @@ func TestProbe(t *testing.T) {
 	raw, _ := os.ReadFile(filepath.Join(bgm, "bgm117.unity3d"))
 	b, clips, _ := openBundle(raw)
 	got, _ := clips[0].resourceData(b)
-	if string(got) != "bgm002" { // первый кандидат длиной >= 55 сек
+	if string(got) != "bgm008" { // ближайший к 75 сек (50+8*3=74)
 		t.Fatalf("bgm117 got %q", got)
 	}
 }
