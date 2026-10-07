@@ -37,7 +37,9 @@ target = bgm121
 func main() {
 	enableUTF8Console()
 	exitCode := 0
-	if err := run(os.Args[1:]); err != nil {
+	if err := run(os.Args[1:]); err == errRelaunched {
+		return
+	} else if err != nil {
 		fmt.Println("\nОШИБКА:", err)
 		exitCode = 1
 	}
@@ -69,6 +71,16 @@ func run(args []string) error {
 	bgm := filepath.Join(game, filepath.FromSlash(bgmRel))
 	backup := filepath.Join(game, backupDir)
 
+	if mode != "list" && !canWrite(game) {
+		// Игра в Program Files и т.п. — перезапускаемся с правами администратора.
+		fmt.Println("Нужны права администратора, запрашиваю...")
+		if err := relaunchAsAdmin([]string{mode, game}); err != nil {
+			return fmt.Errorf("нет прав на запись в папку игры. Запустите программу правой кнопкой -> \"Запуск от имени администратора\" (%v)", err)
+		}
+		fmt.Println("Продолжение в новом окне.")
+		return errRelaunched
+	}
+
 	switch mode {
 	case "restore", "uninstall":
 		return restore(bgm, backup)
@@ -90,6 +102,18 @@ func run(args []string) error {
 	fmt.Println("\nГотово! OBJECTION!  Запускайте игру.")
 	fmt.Println("Удалить мод: запустите \"Удалить мод.bat\".")
 	return nil
+}
+
+var errRelaunched = errors.New("relaunched")
+
+func canWrite(dir string) bool {
+	f, err := os.CreateTemp(dir, ".objmod_*")
+	if err != nil {
+		return false
+	}
+	f.Close()
+	os.Remove(f.Name())
+	return true
 }
 
 func exeDir() string {

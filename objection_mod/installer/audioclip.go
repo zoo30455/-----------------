@@ -28,11 +28,11 @@ type audioClip struct {
 
 func (c *audioClip) field(off int) []byte { return c.file.Data[c.lenPos+off:] }
 
-func (c *audioClip) Channels() uint32   { return c.bo.Uint32(c.field(-28)) }
-func (c *audioClip) Frequency() uint32  { return c.bo.Uint32(c.field(-24)) }
-func (c *audioClip) Length() float32    { return math.Float32frombits(c.bo.Uint32(c.field(-16))) }
-func (c *audioClip) Offset() uint64     { return c.bo.Uint64(c.file.Data[c.resPos:]) }
-func (c *audioClip) Size() uint64       { return c.bo.Uint64(c.file.Data[c.resPos+8:]) }
+func (c *audioClip) Channels() uint32  { return c.bo.Uint32(c.field(-28)) }
+func (c *audioClip) Frequency() uint32 { return c.bo.Uint32(c.field(-24)) }
+func (c *audioClip) Length() float32   { return math.Float32frombits(c.bo.Uint32(c.field(-16))) }
+func (c *audioClip) Offset() uint64    { return c.bo.Uint64(c.file.Data[c.resPos:]) }
+func (c *audioClip) Size() uint64      { return c.bo.Uint64(c.file.Data[c.resPos+8:]) }
 func (c *audioClip) ResourceName() string {
 	return c.Source[strings.LastIndex(c.Source, "/")+1:]
 }
