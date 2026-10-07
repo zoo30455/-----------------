@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"math"
 	"os"
 	"path/filepath"
@@ -147,4 +148,28 @@ func TestRealAudioClipReplace(t *testing.T) {
 		t.Fatal(err)
 	}
 	os.WriteFile(filepath.Join(dir, "replaced.ab"), b.serialize(), 0o644)
+}
+
+func TestProbe(t *testing.T) {
+	dir := t.TempDir()
+	bgm := filepath.Join(dir, "bgm")
+	os.MkdirAll(bgm, 0o755)
+	for i := 0; i < 15; i++ {
+		n := fmt.Sprintf("bgm%03d", i)
+		b := fakeClipBundle("CAB-"+n, n, 2, 44100, 50+float32(i)*3, []byte(n))
+		os.WriteFile(filepath.Join(bgm, n+".unity3d"), encrypt(b.serialize()), 0o644)
+	}
+	for _, pt := range probeTargets {
+		b := fakeClipBundle("CAB-"+pt.file, pt.file, 2, 44100, 60, []byte("tt"))
+		os.WriteFile(filepath.Join(bgm, pt.file+".unity3d"), encrypt(b.serialize()), 0o644)
+	}
+	if err := probe(bgm, filepath.Join(dir, "bak"), 1); err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := os.ReadFile(filepath.Join(bgm, "bgm117.unity3d"))
+	b, clips, _ := openBundle(raw)
+	got, _ := clips[0].resourceData(b)
+	if string(got) != "bgm002" { // первый кандидат длиной >= 55 сек
+		t.Fatalf("bgm117 got %q", got)
+	}
 }

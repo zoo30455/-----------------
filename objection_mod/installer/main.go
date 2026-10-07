@@ -55,7 +55,7 @@ func run(args []string) error {
 	var gameArg string
 	for _, a := range args {
 		switch strings.ToLower(a) {
-		case "install", "restore", "uninstall", "list":
+		case "install", "restore", "uninstall", "list", "probe", "probe2", "probe3", "probe4":
 			mode = strings.ToLower(a)
 		default:
 			gameArg = a
@@ -86,6 +86,12 @@ func run(args []string) error {
 		return restore(bgm, backup)
 	case "list":
 		return writeList(bgm, backup, filepath.Join(exeDir(), listName))
+	case "probe", "probe2", "probe3", "probe4":
+		round := 1
+		if mode != "probe" {
+			round = int(mode[5] - '0')
+		}
+		return probe(bgm, backup, round)
 	}
 
 	source, targets, err := loadConfig()
@@ -346,4 +352,65 @@ func writeList(bgm, backup, out string) error {
 	}
 	fmt.Println("Список треков сохранён:", out)
 	return nil
+}
+
+// Треки третьей игры с известными названиями (по описанию мода
+// "Trials & Tribulations -> Ace Attorney Music Mod").
+var probeTargets = []struct{ file, title string }{
+	{"bgm117", "Зал ожидания суда (Courtroom Lounge)"},
+	{"bgm118", "Суд (Trial)"},
+	{"bgm119", "Допрос ~ Moderato"},
+	{"bgm120", "Допрос ~ Allegro"},
+	{"bgm121", "Objection! 2004"},
+	{"bgm122", "Говорить правду (Telling the Truth)"},
+	{"bgm123", "Преследование (Pressing Pursuit)"},
+	{"bgm124", "Преследование ~ вариация"},
+	{"bgm126", "Расследование ~ начало (Investigation Opening)"},
+	{"bgm137", "Расследование ~ основная (Investigation Core)"},
+}
+
+// probe раскладывает 10 кандидатов из первой игры по известным трекам третьей,
+// чтобы найти "Objection! 2001" за один заход в музыкальный плеер.
+func probe(bgm, backup string, round int) error {
+	var cands []string
+	for i := 0; i < 60; i++ {
+		name := fmt.Sprintf("bgm%03d", i)
+		raw, err := original(bgm, backup, name)
+		if err != nil {
+			continue
+		}
+		_, clips, err := openBundle(raw)
+		if err != nil {
+			continue
+		}
+		if l := clips[0].Length(); name != "bgm012" && l >= 55 && l <= 100 {
+			cands = append(cands, name)
+		}
+	}
+	start := (round - 1) * len(probeTargets)
+	if start >= len(cands) {
+		return fmt.Errorf("кандидаты закончились (всего их %d)", len(cands))
+	}
+	cands = cands[start:]
+	if len(cands) > len(probeTargets) {
+		cands = cands[:len(probeTargets)]
+	}
+
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "ПОИСК OBJECTION! 2001 — заход %d\n", round)
+	sb.WriteString("Откройте музыкальный плеер, третья игра, и послушайте эти треки.\n")
+	sb.WriteString("Где заиграет Objection! 2001 — номер справа и есть нужный.\n\n")
+	for i, c := range cands {
+		t := probeTargets[i]
+		if err := install(bgm, backup, c, []string{t.file}); err != nil {
+			fmt.Printf("  %s: %v\n", t.file, err)
+			continue
+		}
+		fmt.Fprintf(&sb, "  %-48s ->  %s\n", t.title, c)
+	}
+	sb.WriteString("\nНе нашли? Запустите следующий заход (\"Поиск Objection 2.bat\").\n")
+	sb.WriteString("После поиска запустите \"Удалить мод.bat\", впишите номер в objection_mod.txt\n(source = bgmXXX) и запустите ObjectionMod.exe.\n")
+	fmt.Println()
+	fmt.Print(sb.String())
+	return os.WriteFile(filepath.Join(exeDir(), "probe.txt"), []byte("\ufeff"+sb.String()), 0o644)
 }
