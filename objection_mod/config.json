@@ -1,0 +1,8 @@
+{
+  "_comment": "SOURCE = файл 'Objection! 2001' (AA1). TARGETS = файлы Objection из AA2/AA3. Пути относительно папки игры; если путь не совпал, файл ищется по имени. Проверьте имена командой 'list' и при необходимости поправьте.",
+  "SOURCE": "PWAAT_Data/StreamingAssets/sound/BGM/GS1/bgm_objection.ogg",
+  "TARGETS": [
+    "PWAAT_Data/StreamingAssets/sound/BGM/GS2/bgm_objection.ogg",
+    "PWAAT_Data/StreamingAssets/sound/BGM/GS3/bgm_objection.ogg"
+  ]
+}
