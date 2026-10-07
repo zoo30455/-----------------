@@ -24,7 +24,7 @@ const (
 # target = файлы, которые нужно заменить на него (можно несколько строк)
 # Номера — имена файлов из PWAAT_Data\StreamingAssets\Sound\bgm без .unity3d
 
-source = bgm012
+source = bgm004
 
 # Objection! 2004 (Trials and Tribulations)
 target = bgm121
@@ -403,7 +403,7 @@ func probeCandidates(bgm, backup string) []string {
 			continue
 		}
 		l := float64(clips[0].Length())
-		if name == "bgm012" || l < 40 || l > 150 {
+		if name == "bgm004" || name == "bgm012" || l < 40 || l > 150 {
 			continue
 		}
 		cs = append(cs, cand{name, math.Abs(l - 75)})
