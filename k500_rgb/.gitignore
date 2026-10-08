@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 explore_results.json
 k500_limits.json
+ranni_mask.json

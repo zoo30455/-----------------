@@ -1,5 +1,15 @@
 # K500 RGB из Python
 
+**Главное — `ranni_signs.py`: знаки Ранни** (Тёмная Луна, Меч Тёмной Луны, шляпа
+Снежной ведьмы, Кольцо, Эра Звёзд и живые эффекты). Каждый знак — одна команда,
+клавиатура его запоминает. Рисунки — `ranni_signs.png`.
+
+```
+python ranni_signs.py --preview
+python ranni_signs.py --tour
+python ranni_signs.py moon
+```
+
 ```
 pip install hidapi
 python k500_test.py      # пошаговый тест
