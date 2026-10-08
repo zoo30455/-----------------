@@ -193,15 +193,21 @@ class K500:
         self.close()
 
     def send(self, mode, color1=(0, 0, 0), color2=None, color3=None,
-             brightness=2, speed=3, keys=None):
-        """Отправляет одну команду. keys — имена клавиш для customize."""
+             brightness=2, speed=3, keys=None, palette=None):
+        """Отправляет одну команду.
+        keys    — имена клавиш для customize;
+        palette — до 8 цветов RGB для слотов 0..7 (поверх палитры по умолчанию;
+                  color1/color2/color3 затем перезаписывают слоты 0/1/2)."""
         buf = bytearray(64)
         buf[0x00] = 0x01
         buf[0x01] = mode
         buf[0x02] = max(0, min(2, brightness))
         buf[0x03] = max(0, min(3, speed))
         buf[0x10:0x10 + len(DEFAULT_PALETTE)] = DEFAULT_PALETTE
-        buf[0x10:0x13] = bytes(color1)
+        for i, rgb in enumerate((palette or [])[:8]):
+            buf[0x10 + 4 * i:0x13 + 4 * i] = bytes(rgb)
+        if palette is None or color1 != (0, 0, 0):
+            buf[0x10:0x13] = bytes(color1)
         if color2 is not None:
             buf[0x14:0x17] = bytes(color2)
         if color3 is not None:
