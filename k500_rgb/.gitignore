@@ -1,3 +1,4 @@
 __pycache__/
 *.pyc
 explore_results.json
+k500_limits.json
