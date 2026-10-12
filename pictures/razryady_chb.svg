@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" font-family="Arial, sans-serif" fill="#000">
+<rect width="1200" height="700" fill="#fff"/>
+<text x="600.0" y="55" font-size="38" font-weight="bold" text-anchor="middle">Разряды: сотни, десятки, единицы</text>
+<rect x="40" y="90" width="330" height="290" rx="14" fill="none" stroke="#000" stroke-width="3"/>
+<text x="205.0" y="130" font-size="30" font-weight="bold" text-anchor="middle">СОТНИ</text>
+<rect x="435" y="90" width="330" height="290" rx="14" fill="none" stroke="#000" stroke-width="3"/>
+<text x="600.0" y="130" font-size="30" font-weight="bold" text-anchor="middle">ДЕСЯТКИ</text>
+<rect x="830" y="90" width="330" height="290" rx="14" fill="none" stroke="#000" stroke-width="3"/>
+<text x="995.0" y="130" font-size="30" font-weight="bold" text-anchor="middle">ЕДИНИЦЫ</text>
+<rect x="135.0" y="165" width="140" height="140" fill="#fff" stroke="#000" stroke-width="3"/>
+<line x1="149.0" y1="165" x2="149.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="179" x2="275.0" y2="179" stroke="#000" stroke-width="1"/>
+<line x1="163.0" y1="165" x2="163.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="193" x2="275.0" y2="193" stroke="#000" stroke-width="1"/>
+<line x1="177.0" y1="165" x2="177.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="207" x2="275.0" y2="207" stroke="#000" stroke-width="1"/>
+<line x1="191.0" y1="165" x2="191.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="221" x2="275.0" y2="221" stroke="#000" stroke-width="1"/>
+<line x1="205.0" y1="165" x2="205.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="235" x2="275.0" y2="235" stroke="#000" stroke-width="1"/>
+<line x1="219.0" y1="165" x2="219.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="249" x2="275.0" y2="249" stroke="#000" stroke-width="1"/>
+<line x1="233.0" y1="165" x2="233.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="263" x2="275.0" y2="263" stroke="#000" stroke-width="1"/>
+<line x1="247.0" y1="165" x2="247.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="277" x2="275.0" y2="277" stroke="#000" stroke-width="1"/>
+<line x1="261.0" y1="165" x2="261.0" y2="305" stroke="#000" stroke-width="1"/>
+<line x1="135.0" y1="291" x2="275.0" y2="291" stroke="#000" stroke-width="1"/>
+<rect x="593.0" y="165" width="14" height="140" fill="#fff" stroke="#000" stroke-width="3"/>
+<line x1="593.0" y1="179" x2="607.0" y2="179" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="193" x2="607.0" y2="193" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="207" x2="607.0" y2="207" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="221" x2="607.0" y2="221" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="235" x2="607.0" y2="235" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="249" x2="607.0" y2="249" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="263" x2="607.0" y2="263" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="277" x2="607.0" y2="277" stroke="#000" stroke-width="1"/>
+<line x1="593.0" y1="291" x2="607.0" y2="291" stroke="#000" stroke-width="1"/>
+<rect x="988.0" y="291" width="14" height="14" fill="#000" stroke="#000" stroke-width="3"/>
+<text x="205.0" y="345" font-size="26" font-weight="bold" text-anchor="middle">1 сотня = 100</text>
+<text x="600.0" y="345" font-size="26" font-weight="bold" text-anchor="middle">1 десяток = 10</text>
+<text x="995.0" y="345" font-size="26" font-weight="bold" text-anchor="middle">1 единица = 1</text>
+<text x="402" y="215" font-size="24" font-weight="bold" text-anchor="middle">×10</text>
+<line x1="425" y1="235" x2="380" y2="235" stroke="#000" stroke-width="3"/>
+<polygon points="375,235 389,227 389,243" fill="#000"/>
+<text x="797" y="215" font-size="24" font-weight="bold" text-anchor="middle">×10</text>
+<line x1="820" y1="235" x2="775" y2="235" stroke="#000" stroke-width="3"/>
+<polygon points="770,235 784,227 784,243" fill="#000"/>
+<text x="770" y="415" font-size="22" text-anchor="middle">10 единиц = 1 десяток</text>
+<text x="400" y="415" font-size="22" text-anchor="middle">10 десятков = 1 сотня</text>
+<rect x="105" y="440" width="200" height="110" fill="none" stroke="#000" stroke-width="3"/>
+<text x="205.0" y="575" font-size="20" text-anchor="middle">цифра в этом разряде</text>
+<rect x="500" y="440" width="200" height="110" fill="none" stroke="#000" stroke-width="3"/>
+<text x="600.0" y="575" font-size="20" text-anchor="middle">цифра в этом разряде</text>
+<rect x="895" y="440" width="200" height="110" fill="none" stroke="#000" stroke-width="3"/>
+<text x="995.0" y="575" font-size="20" text-anchor="middle">цифра в этом разряде</text>
+<text x="600.0" y="625" font-size="24" text-anchor="middle">Число читается слева направо: сначала сотни, потом десятки, потом единицы.</text>
+<text x="600.0" y="662" font-size="24" text-anchor="middle">Каждый разряд в 10 раз больше соседнего справа.</text>
+</svg>
